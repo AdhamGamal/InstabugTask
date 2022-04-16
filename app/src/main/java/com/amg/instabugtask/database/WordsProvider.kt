@@ -12,6 +12,7 @@ import com.amg.instabugtask.database.WordsContract.WordEntry.TABLE_NAME
 class WordsProvider : ContentProvider() {
 
     private var dbHelper: WordsDbHelper? = null
+    private val failed = 0
 
     override fun onCreate(): Boolean {
         dbHelper = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -51,7 +52,7 @@ class WordsProvider : ContentProvider() {
 
     override fun insert(uri: Uri, values: ContentValues?): Uri {
         dbHelper?.writableDatabase?.insert(TABLE_NAME, null, values)?.let {
-            if (it <= 0) {
+            if (it <= failed) {
                 throw SQLException("Failed to insert row into $uri")
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -70,7 +71,7 @@ class WordsProvider : ContentProvider() {
             try {
                 for (cv in values) {
                     val newID = it.insertOrThrow(TABLE_NAME, null, cv)
-                    if (newID <= 0) {
+                    if (newID <= failed) {
                         throw SQLException("Failed to insert row into $uri")
                     }
                 }
@@ -84,12 +85,12 @@ class WordsProvider : ContentProvider() {
             } finally {
                 it.endTransaction()
             }
-        } ?: 0
+        } ?: failed
     }
 
     override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String?>?): Int {
         return dbHelper?.writableDatabase?.delete(TABLE_NAME, selection, selectionArgs)?.let {
-            if (it != 0) {
+            if (it != failed) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     requireContext().contentResolver
                 } else {
@@ -97,7 +98,7 @@ class WordsProvider : ContentProvider() {
                 }?.notifyChange(uri, null)
             }
             it
-        } ?: 0
+        } ?: failed
     }
 
     override fun update(
@@ -105,7 +106,7 @@ class WordsProvider : ContentProvider() {
     ): Int {
         return dbHelper?.writableDatabase?.update(TABLE_NAME, values, selection, selectionArgs)
             ?.let {
-                if (it != 0) {
+                if (it != failed) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         requireContext().contentResolver
                     } else {
@@ -113,7 +114,7 @@ class WordsProvider : ContentProvider() {
                     }?.notifyChange(uri, null)
                 }
                 it
-            } ?: 0
+            } ?: failed
     }
 
     override fun getType(uri: Uri): String? = null

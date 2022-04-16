@@ -1,8 +1,5 @@
 package com.amg.instabugtask.views
 
-import android.os.AsyncTask
-import android.os.Parcelable
-import android.util.Log
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -18,7 +15,7 @@ class MainVM(
     private val databaseUseCase: DatabaseUseCase
 ) : ViewModel() {
 
-    private val wordsLiveData = MutableLiveData<FetchingState>(FetchingState.Loading("Loading"))
+    private val wordsLiveData = MutableLiveData<FetchingState>(FetchingState.Loading(""))
     private var fetchingWordsTask: FetchWords? = null
     private var fetchingLocalWordsTask: FetchLocalWords? = null
     private var searchQuery = ""
@@ -73,17 +70,13 @@ class MainVM(
     }
 
     private fun getWords() {
-        if (fetchingWordsTask?.status != AsyncTask.Status.FINISHED || fetchingLocalWordsTask?.status != AsyncTask.Status.FINISHED) {
-            clearTasks()
-        }
+        clearTasks()
         fetchingWordsTask = FetchWords(networkUseCase, databaseUseCase, wordsLiveData)
         fetchingWordsTask?.execute()
     }
 
     private fun getLocalWords(parameter: String?) {
-        if (fetchingWordsTask?.status != AsyncTask.Status.FINISHED || fetchingLocalWordsTask?.status != AsyncTask.Status.FINISHED) {
-            clearTasks()
-        }
+        clearTasks()
         fetchingLocalWordsTask = FetchLocalWords(databaseUseCase, wordsLiveData)
         fetchingLocalWordsTask?.execute(parameter)
     }

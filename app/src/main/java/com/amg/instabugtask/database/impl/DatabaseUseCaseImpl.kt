@@ -51,23 +51,26 @@ class DatabaseUseCaseImpl(private val contentResolver: ContentResolver?) : Datab
         return words
     }
 
-    override fun insertWords(words: List<Word>): Int {
-        return try {
-            val contentValues = words.map {
-                ContentValues().apply {
-                    put(COLUMN_NAME_CHARS, it.chars)
-                    put(COLUMN_NAME_COUNT, it.count)
-                }
-            }
-            contentResolver?.bulkInsert(BASE_URI, contentValues.toTypedArray()) ?: 0
-        } catch (e: Exception) {
-            Log.e(this.javaClass.name, e.message.toString())
-            0
-        }
+    val failed = 0
 
+    override fun insertWords(words: List<Word>): Int {
+        return if (words.isNotEmpty()) {
+            try {
+                val contentValues = words.map {
+                    ContentValues().apply {
+                        put(COLUMN_NAME_CHARS, it.chars)
+                        put(COLUMN_NAME_COUNT, it.count)
+                    }
+                }
+                contentResolver?.bulkInsert(BASE_URI, contentValues.toTypedArray()) ?: failed
+            } catch (e: Exception) {
+                Log.e(this.javaClass.name, e.message.toString())
+                failed
+            }
+        } else failed
     }
 
     override fun removeWords(): Int {
-        return contentResolver?.delete(BASE_URI, null, null) ?: 0
+        return contentResolver?.delete(BASE_URI, null, null) ?: failed
     }
 }

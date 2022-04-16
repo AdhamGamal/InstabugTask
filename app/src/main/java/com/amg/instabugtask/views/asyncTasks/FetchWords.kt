@@ -18,25 +18,19 @@ class FetchWords(
     override fun doInBackground(vararg p0: Void?): List<Word> {
         wordsLiveData.postValue(FetchingState.Loading("Start Fetching Words..."))
         val htmlPage = networkUseCase.getHtml()
-        wordsLiveData.postValue(FetchingState.Loading("Count Words Appearance..."))
-        val words = htmlPage?.let {
-            convertToWords(htmlPage)
-        } ?: emptyList()
+        wordsLiveData.postValue(FetchingState.Loading("Counting Words Appearance..."))
+        val words = htmlPage?.let { convertToWords(htmlPage) } ?: emptyList()
 
         if (words.isEmpty()) {
             val localWords = databaseUseCase.getWords()
             if (localWords.isEmpty()) {
-                wordsLiveData.postValue(FetchingState.Failed("No Internet Connections..."))
+                wordsLiveData.postValue(FetchingState.Failed("No Internet Connections!"))
             }
             return localWords
         } else {
             wordsLiveData.postValue(FetchingState.Loading("Saving Words..."))
-            val isDeleted = databaseUseCase.removeWords()
-            wordsLiveData.postValue(FetchingState.Loading("Almost Done Words..."))
-            val isInserted = databaseUseCase.insertWords(words)
-            if (isInserted == 0) {
-                wordsLiveData.postValue(FetchingState.Failed("Saving Failed..."))
-            }
+            databaseUseCase.removeWords()
+            databaseUseCase.insertWords(words)
         }
         return words
     }
@@ -49,6 +43,6 @@ class FetchWords(
 
     override fun onCancelled() {
         super.onCancelled()
-        wordsLiveData.value = FetchingState.Failed("Something Went Wrong.")
+        wordsLiveData.value = FetchingState.Failed("Something Went Wrong!")
     }
 }

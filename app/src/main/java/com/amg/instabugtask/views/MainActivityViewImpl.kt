@@ -11,7 +11,6 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.DividerItemDecoration
-//import androidx.recyclerview.widget.RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 import com.amg.instabugtask.R
 import com.amg.instabugtask.databinding.ActivityMainBinding
 import com.amg.instabugtask.views.adapters.WordsAdapter
@@ -27,14 +26,16 @@ class MainActivityViewImpl : MainActivityView {
     private var listState: Parcelable? = null
     private var stateChanged = true
 
-    private val views = listOf<View?>(
-        binding?.layoutLoading?.container,
-        binding?.layoutError?.container,
-        binding?.wordsList,
-    )
+    private var views: List<View?>? = null
 
     override fun onInflate(layoutInflater: LayoutInflater): View? {
         binding = ActivityMainBinding.inflate(layoutInflater)
+
+        views = listOf(
+            binding?.layoutLoading?.container,
+            binding?.layoutError?.container,
+            binding?.wordsList,
+        )
         return binding?.root
     }
 
@@ -119,9 +120,7 @@ class MainActivityViewImpl : MainActivityView {
                     setVisible(it.layoutLoading.container)
                 }
                 is FetchingState.Loaded -> {
-                    it.wordsList.adapter = WordsAdapter(state.words).apply {
-//                        stateRestorationPolicy = PREVENT_WHEN_EMPTY
-                    }
+                    it.wordsList.adapter = WordsAdapter(state.words)
                     if (stateChanged) {
                         binding?.wordsList?.layoutManager?.onRestoreInstanceState(listState)
                         stateChanged = false
@@ -141,7 +140,7 @@ class MainActivityViewImpl : MainActivityView {
     }
 
     private fun setVisible(view: View) {
-        views.forEach {
+        views?.forEach {
             it?.let {
                 if (it == view) {
                     it.visibility = View.VISIBLE
@@ -162,5 +161,6 @@ class MainActivityViewImpl : MainActivityView {
         inputMethodManager = null
         viewListener = null
         listState = null
+        views = null
     }
 }

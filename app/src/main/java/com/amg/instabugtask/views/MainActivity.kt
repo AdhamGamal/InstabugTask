@@ -3,8 +3,6 @@ package com.amg.instabugtask.views
 import android.app.SearchManager
 import android.content.Context
 import android.os.Bundle
-import android.os.PersistableBundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
@@ -39,27 +37,25 @@ class MainActivity : AppCompatActivity() {
             (getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
         rootView.setup(inputMethodManager, ViewListenerImpl(mainVM))
 
-        mainVM.observeFetchingState(this, FetchingStateObserver(rootView, mainVM))
+        mainVM.observeFetchingState(this, FetchingStateObserver(rootView))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelable("ListState", rootView.getListState())
-        Log.e(">>>>>>>>>>>>>>>>>>>>>>", "onSaveInstanceState")
 
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         rootView.setListState(savedInstanceState.getParcelable("ListState"))
-        Log.e(">>>>>>>>>>>>>>>>>>>>>>", "onRestoreInstanceState")
     }
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         rootView.onInflateMenu(menuInflater, menu, searchManager, componentName)
-        return true
+        return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

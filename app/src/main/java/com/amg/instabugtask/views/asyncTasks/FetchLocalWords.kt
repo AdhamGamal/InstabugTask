@@ -34,10 +34,12 @@ class FetchLocalWords(
             }
         }
 
-        if (words.isEmpty() && parameter != ORDER_ASC && parameter != ORDER_DESC) {
-            wordsLiveData.postValue(FetchingState.Failed("Loading Failed..."))
-        } else {
-            wordsLiveData.postValue(FetchingState.Failed("No Search Result!"))
+        if (words.isEmpty()) {
+            if (parameter != null && parameter != ORDER_ASC && parameter != ORDER_DESC) {
+                wordsLiveData.postValue(FetchingState.Failed("No Search Result!"))
+            } else {
+                wordsLiveData.postValue(FetchingState.Failed("No Internet Connections!"))
+            }
         }
         return words
     }
@@ -50,6 +52,6 @@ class FetchLocalWords(
 
     override fun onCancelled() {
         super.onCancelled()
-        wordsLiveData.value = FetchingState.Failed("Something Went Wrong.")
+        wordsLiveData.value = FetchingState.Failed("Something Went Wrong!")
     }
 }
