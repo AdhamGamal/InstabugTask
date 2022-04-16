@@ -5,4 +5,5 @@
     <string name="action_sort_ascending">Sort Ascending</string>
     <string name="action_sort_descending">Sort Descending</string>
     <string name="action_sort_default">Sort Alphabetically</string>
+    <string name="layout_error_btn">Retry</string>
 </resources>

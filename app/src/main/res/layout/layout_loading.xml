@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="@dimen/normal_padding"
     android:visibility="gone"
     tools:visibility="visible">
 
@@ -15,15 +15,14 @@
         style="@style/TextAppearance.MaterialComponents.Body1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="@dimen/normal_padding"
         android:textStyle="bold"
         tools:text="@tools:sample/cities" />
 
     <ProgressBar
-        android:id="@+id/retry"
+        android:id="@+id/loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:text="Retry" />
+        android:indeterminate="true" />
 
 </LinearLayout>
