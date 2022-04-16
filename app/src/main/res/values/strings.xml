@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Instabug Task</string>
+    <string name="action_sort">Sort</string>
+    <string name="action_search">Search</string>
+    <string name="action_sort_ascending">Sort Ascending</string>
+    <string name="action_sort_descending">Sort Descending</string>
+    <string name="action_sort_default">Sort Alphabetically</string>
+</resources>
